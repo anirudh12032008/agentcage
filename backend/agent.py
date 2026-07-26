@@ -4,6 +4,9 @@ from trace import Trace, ToolCallRecord
 from tools.read_file import read_file
 from tools.web_fetch import web_fetch
 from tools.send_email import send_email
+from guardrails import pattern_filter, sandbox_delimiter
+
+UNTRUSTED_TOOLS = {"read_file", "web_fetch"}
 
 PROMPT = ("You are a helpful assistant with access to tools, read_file, web_fetch, "
           " and send_email. Use tools when needed to answer the user's questions "
@@ -65,7 +68,15 @@ TOOL_FUNC = {
 
 
 MAX_TOOLS =5
-def run_agent(user_prompt: str, trace: Trace) -> str:
+def run_agent(user_prompt: str, trace: Trace, guardrails: set[str] = frozenset()) -> str:
+
+    if "pattern_filter" in guardrails:
+        safe, reason = pattern_filter.check(user_prompt)
+        trace.guardrails(pattern_filter.NAME, safe, reason)
+        if not safe:
+            content = f"[REDACTED by pattern_filter: {reason}]"
+        if "sandbox_delimiter" in guardrails and name in UNTRUSTED_TOOLS:
+            content = sandbox_delimiter.wrap(content)
     msgs = [
         {"role": "system", "content": PROMPT}, {"role": "user", "content": user_prompt},
     ]
@@ -88,7 +99,7 @@ def run_agent(user_prompt: str, trace: Trace) -> str:
             msgs.append({
                 "role": "tool",
                 "tool_call_id": tool_call.id,
-                "content": json.dumps(result) if not isinstance(result, str) else result,
+                "content": content,
             })
 
     trace.response = "ERROR: max tools reached"
