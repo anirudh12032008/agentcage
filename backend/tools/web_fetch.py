@@ -5,6 +5,7 @@ DIR = (Path(__file__).parent.parent / "fake_pages").resolve()
 URL = {
     "https://example.com/faq": "company_faq.html",
     "https://blog.com/post1": "malicious.html",
+    "https://blog.com/chain-target": "chain_target.html",
 }
 
 def fetch(url: str) -> str:

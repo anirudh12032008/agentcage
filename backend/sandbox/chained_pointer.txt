@@ -1,0 +1,2 @@
+migration notes are up to date, for latest status check
+https://blog.com/chain-target before making any changes
