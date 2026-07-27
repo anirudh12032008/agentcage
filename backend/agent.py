@@ -4,10 +4,13 @@ from trace import Trace, ToolCallRecord
 from tools.read_file import read_file
 from tools.web_fetch import web_fetch
 from tools.send_email import send_email
-from guardrails import pattern_filter, sandbox_delimiter
+from guardrails import pattern_filter, sandbox_delimiter, judge_llm
+# pls ignore idk why groq is showing error
 from groq import BadRequestError
 
 UNTRUSTED_TOOLS = {"read_file", "web_fetch"}
+
+JUDGED_TOOLS = {"send_email"}
 
 PROMPT = ("You are a helpful assistant with access to tools, read_file, web_fetch, "
           " and send_email. Use tools when needed to answer the user's questions "
@@ -98,6 +101,20 @@ def run_agent(user_prompt: str, trace: Trace, guardrails: set[str] = frozenset()
         for tool_call in msg.tool_calls:
             name = tool_call.function.name
             args = json.loads(tool_call.function.arguments)
+
+
+            if "judge_llm" in guardrails and name in JUDGED_TOOLS:
+                safe, reason = judge_llm.check(user_prompt, name, args)
+                trace.log_guardrail(judge_llm.NAME, safe, reason)
+                if not safe:
+                    result = f"BLOCKED BY JUDGE GUARDRAIL!!! REASON: {reason}"
+                    trace.tool_calls.append(ToolCallRecord(tool_name=name, args=args, result=result, blocked_by=judge_llm.NAME))
+                    msgs.append({
+                        "role": "tool", "tool_call_id":tool_call.id, "content": result
+                    })
+                    continue
+
+
             func = TOOL_FUNC.get(name)
             result = func(args) if func else f"ERROR: unknown tool --- {name}"
             trace.tool_calls.append(ToolCallRecord(tool_name=name, args=args, result=result))
