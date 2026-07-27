@@ -4,46 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>prompt injection arena</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <header>
-        <h1>Prompt injection arena</h1>
-        <p class="subtitle">attack a tool using agent. Toggle guardrails. See what gets through</p>
+<body class="m-0 bg-gray-950 text-gray-200 leading-relaxed font-sans">
+    <header class="pt-8 px-6 pb-4 text-center relative">
+        <button id="theme-toggle" aria-label="Toggle theme" class="absolute right-4 top-4">Dark</button>
+        <h1 class="mb-0 mb-1 text-3xl">Prompt injection arena</h1>
+        <p class="subtitle text-gray-400 m-0">attack a tool using agent. Toggle guardrails. See what gets through</p>
     </header>
 
-    <main>
-        <section id="controls">
-            <div class="field">
-                <label for="attack-select">Attack</label>
-                <select id="attack-select">
+    <main class="max-w-[720px] mx-auto px-6 pt-4 pb-12 flex flex-col gap-6">
+        <section id="controls" class="bg-gray-900 border border-gray-700 rounded-lg p-5 ">
+            <div class="field mb-4">
+                <label for="attack-category" class="block font-semibold text-sm mb-1.5 text-gray-400">Attack</label>
+                <select id="attack-category" class="w-full py-2.5 px-5 bg-gray-950 border border-gray-700 rounded-md text-gray-200 text-[0.95rem]">
+                    <option value="">all categories</option>
+                              <option value="direct">direct</option>
+          <option value="indirect">indirect</option>
+          <option value="tool-hijack">tool-hijack</option>
+
+                </select>
+            </div>
+            <div class="field mb-4">
+<label for="attack-select" class="block font-semibold text-sm mb-1.5 text-gray-400">Attack</label>
+                <select id="attack-select" class="w-full py-2.5 px-5 bg-gray-950 border border-gray-700 rounded-md text-gray-200 text-[0.95rem]">
                     <option value="">choose an attack</option>
                 </select>
             </div>
-            <div class="field">
-                <label for="custom-prompt">write your own attack      </label>
-                <textarea id="custom-prompt" placeholder="type a custom attack"></textarea>
-           
+            <div class="field mb-4">
+                <label for="custom-prompt" class="block font-semibold text-sm mb-1.5 text-gray-400">write your own attack      </label>
+                <textarea id="custom-prompt" placeholder="type a custom attack" class="w-full py-2.5 px-5 bg-gray-950 border border-gray-700 rounded-md text-gray-200 text-[0.95rem]"></textarea>
+            
             </div>
-            <div class="field">
-<label > guardrails</label>
-<div id="guardrail-toggles">
-<label> <input type="checkbox" value="pattern_filter">pattern filter </label>
-<label> <input type="checkbox" value="pattern_filter">sandbox delimiter </label>
-<label> <input type="checkbox" value="pattern_filter">judge llm </label>
+
+
+
+
+            <div class="field mb-4">
+<label class="block font-semibold text-sm mb-1.5 text-gray-400" > guardrails</label>
+<div id="guardrail-toggles" class="flex flex-col gap-1.5">
+<label class="font-normal text-gray-200 flex items-center gap-2"> <input  type="checkbox" value="pattern_filter">pattern filter </label>
+<label class="font-normal text-gray-200 flex items-center gap-2"> <input type="checkbox" value="pattern_filter">sandbox delimiter </label>
+<label class="font-normal text-gray-200 flex items-center gap-2"> <input type="checkbox" value="pattern_filter">judge llm </label>
 
 
 
 
 </div>
             </div>
-            <button id="run-btn">run attack</button>
+            <button id="run-btn" class="w-full py-2.5 px-3 bg-indigo-500 border-none rounded-md text-gray-200 text-[0.95]">run attack</button>
         </section>
-        <section id="result">
-            <div id="badge"></div>
+        <section id="result" class="bg-gray-900 border border-gray-700 rounded-lg p-5">
+            <div id="badge" class="inline-block py-1.5 px-3.5 rounded-full font-bold text-sm mb-4"></div>
             <div id="trace-viewer"></div>
         </section>
-        <section id="scoreboard">
+        <section id="scoreboard" class="bg-gray-900 border border-gray-700 rounded-lg p-5">
             <h2>Scoreboard</h2>
             <div id="scoreboard-content">no runs yet</div>
         </section>
