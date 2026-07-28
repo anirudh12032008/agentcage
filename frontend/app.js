@@ -4,7 +4,7 @@ const customPrompt = document.getElementById("custom-prompt");
 const runBtn = document.getElementById("run-btn");
 const badgeEl = document.getElementById("badge");
 const traceViewerEl = document.getElementById("trace-viewer");
-
+const scoreboardEl = document.getElementById("scoreboard-content");
 
 
 
@@ -33,6 +33,26 @@ function renderTrace(trace, breach){
     }
 
     steps.push(`<div class="trace-step"><div class="label">final result</div><pre>${escapeHtml(trace.response)}</pre></div>`);
+}
+
+
+
+
+
+async function loadScoreboard(){
+    const res = await fetch(`${API_BASE}/scoreboard`);
+    const data = await res.json();
+    if (data.total_runs === 0){
+        scoreboardEl.textContent = "no runs yet";
+        return;
+    }
+    const rows = Object.entries(data.by_guardrail_combo).map(([combo, stats]) => `<tr><td>${escapeHtml(combo)}</td><td>${stats.attempted}</td><td>${stats.breaches}</td></tr>`).join("");
+    scoreboardEl.innerHTML = `<p>${data.total_runs} runs attempted, ${data.breaches} breaches overall
+    
+    <table>
+      <thead><tr><th>Guardrail combo</th><th>Attempted</th><th>Breaches</th></tr></thead>
+    <tbody>${rows}</tbody>
+      </table></p>`;
 }
 
 
@@ -81,6 +101,7 @@ async function runAttack(){
             return;
         }
         renderTrace(data.trace, data.breach)
+        await loadScoreboard();
     } finally {
         runBtn.disabled = false;
         runBtn.textContent = "ATTACK!!!!!!!";
@@ -89,3 +110,4 @@ async function runAttack(){
 }
 runBtn.addEventListener("click", runAttack);
 loadAttacks();
+loadScoreboard();
