@@ -6,6 +6,8 @@ from attacks.loader import load_attack, get_attack
 from scoreboard import record_run, breached, get_scoreboard
 from trace import Trace
 from security import check_api_key, check_rate_limit
+from trace_store import save_trace, get_trace
+
 
 
 app = FastAPI(title="battle")
@@ -50,7 +52,19 @@ def run(req: RunRequest):
     run_agent(prompt, trace, guardrails=set(req.guardrails))
     breach = breached(trace)
     record_run(trace, breach, difficulty=difficulty)
-    return {"trace": trace.to_dict(), "breach": breach}
+    trace_d = trace.to_dict()
+    id = save_trace(trace_d)
+    return {"trace": trace_d, "breach": breach, "trace_id": id}
+
+
+
+
+@app.get("/trace/{id}")
+def replay(id: str):
+    trace_d = get_trace(id)
+    if trace_d is None:
+        return {"error": "unknown trace"}
+    return {"trace"}
 
 
 
