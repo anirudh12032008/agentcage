@@ -20,7 +20,6 @@ function renderTrace(trace, breach){
     const steps = [];
     steps.push(`<div class="trace-step"><div class="label">prompt</div><pre>${escapeHtml(trace.prompt)}</pre></div>`);
 
-
     for (const t of trace.tool_calls){
         const blocked = t.blocked ? ` (blocked by ${t.blocked_by})` : "";
         steps.push(`<div class="trace-step"><div class="label"> tool call ${blocked}</div>
