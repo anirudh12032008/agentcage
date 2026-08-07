@@ -39,15 +39,17 @@ def run(req: RunRequest):
             return {f"unknown attack": {req.attack_id}}
         prompt = a["payload"]
         name = a["name"]
+        difficulty = a["difficulty"]
     elif req.custom_prompt:
         prompt = req.custom_prompt
         name = None
+        difficulty = None
     else:
         return {"error": "no id nor custom prompt given"}
     trace = Trace(user_prompt=prompt, attack_name=name)
     run_agent(prompt, trace, guardrails=set(req.guardrails))
     breach = breached(trace)
-    record_run(trace, breach)
+    record_run(trace, breach, difficulty=difficulty)
     return {"trace": trace.to_dict(), "breach": breach}
 
 

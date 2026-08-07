@@ -46,7 +46,7 @@ async function loadScoreboard(){
         return;
     }
     const rows = Object.entries(data.by_guardrail_combo).map(([combo, stats]) => `<tr><td>${escapeHtml(combo)}</td><td>${stats.attempted}</td><td>${stats.breaches}</td></tr>`).join("");
-    scoreboardEl.innerHTML = `<p>${data.total_runs} runs attempted, ${data.breaches} breaches overall
+    scoreboardEl.innerHTML = `<p>${data.total_runs} runs attempted, ${data.breaches} breaches overall, attacker score: ${data.attacker_score ?? 0} (harder breaches give more points)
     
     <table>
       <thead><tr><th>Guardrail combo</th><th>Attempted</th><th>Breaches</th></tr></thead>
