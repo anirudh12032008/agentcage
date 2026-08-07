@@ -1,10 +1,11 @@
-from fastAPI import FastAPI
+from fastAPI import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from agent import run_agent
 from attacks.loader import load_attack, get_attack
 from scoreboard import record_run, breached, get_scoreboard
 from trace import Trace
+from security import check_api_key, check_rate_limit
 
 
 app = FastAPI(title="battle")
@@ -30,7 +31,7 @@ class RunRequest(BaseModel):
     guardrails: list[str] = []
 
 
-@app.post("/run")
+@app.post("/run", dependencies=[Depends(check_api_key), Depends(check_rate_limit)])
 def run(req: RunRequest):
     if req.attack_id:
         a = get_attack(req.attack_id)
