@@ -4,7 +4,7 @@ from trace import Trace, ToolCallRecord
 from tools.read_file import read_file
 from tools.web_fetch import web_fetch
 from tools.send_email import send_email
-from guardrails import pattern_filter, sandbox_delimiter, judge_llm
+from guardrails import pattern_filter, sandbox_delimiter, judge_llm, output_redaction
 # pls ignore idk why groq is showing error
 from groq import BadRequestError
 
@@ -94,8 +94,14 @@ def run_agent(user_prompt: str, trace: Trace, guardrails: set[str] = frozenset()
             return trace.response
         msg = res.choices[0].message
         if not msg.tool_call:
-            trace.response = msg.content
-            return msg.content
+            cont = msg.content
+            if "output_redaction" in guardrails:
+                passed, reason = output_redaction.check(cont)
+                trace.log_guardrail(output_redaction.NAME, passed, reason)
+                if not passed:
+                    cont = f"[REDACTED by output_redaction: {reason}]"
+            trace.response = cont
+            return cont
         msgs.append(msg)
 
         for tool_call in msg.tool_calls:
