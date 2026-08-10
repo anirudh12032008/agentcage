@@ -41,6 +41,10 @@ function renderTrace(trace, breach){
 async function loadScoreboard(){
     const res = await fetch(`${API_BASE}/scoreboard`);
     const data = await res.json();
+
+
+    attackStats = data.by_attack || {};
+    renderAttackOptions();
     if (data.total_runs === 0){
         scoreboardEl.textContent = "no runs yet";
         return;
@@ -56,6 +60,7 @@ async function loadScoreboard(){
 
 
 let allAttacks = [];
+let attackStats = {};
 
 function renderAttackOptions(){
     const category = categoryFilter.value;
@@ -65,7 +70,11 @@ function renderAttackOptions(){
     
         const opt = document.createElement("option");
         opt.value = a.id;
-        opt.textContent = `${a.name} (${a.category}, ${a.difficulty})`;
+        const stats = attackStats[a.id];
+        const passRate = stats 
+        ? ` - ${Math.round((1-stats.breaches/ stats.attempted)*100)} % blocked so far`
+        : ""
+        opt.textContent = `${a.name} (${a.category}, ${a.difficulty}) ${passRate}`;
         attackSelect.appendChild(opt);
     }
 }
