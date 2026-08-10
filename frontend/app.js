@@ -120,8 +120,8 @@ async function runAttack(){
             body: JSON.stringify(body),
         });
         const data = await res.json();
-        if (data.error){
-            alert(data.error);
+        if (!res.ok || data.error){
+            alert(data.detail || data.error || `request failed (${res.status})`);
             return;
         }
         renderTrace(data.trace, data.breach)
