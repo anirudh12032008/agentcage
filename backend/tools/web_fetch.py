@@ -12,7 +12,9 @@ def fetch(url: str) -> str:
     if url not in URL:
         return "ERROR: no such url here"
     filename = URL[url]
-    t = (DIR/ filename)
+    t = (DIR/ filename).resolve()
+    if DIR not in t.parents and t != DIR:
+        return f"ERROR: refused to serve {filename} "
     if not t.is_file():
         return "ERROR: file missing"
     return t.read_text()

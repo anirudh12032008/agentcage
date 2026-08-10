@@ -1,0 +1,17 @@
+name: CI
+on:
+  push:
+  pull_request:
+  
+jobs:
+  sanity-scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - run: uv sync
+        working-directory: backend
+
+      - run: |
+          uv run python scripts/test_read_file.py
+        working-directory: backend
