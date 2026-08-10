@@ -17,6 +17,17 @@
 
     <main class="max-w-[720px] mx-auto px-6 pt-4 pb-12 flex flex-col gap-6">
         <section id="controls" class="bg-gray-900 border border-gray-700 rounded-lg p-5 ">
+            <div class="field">
+                <label for=""attack-category" class="block font-semibold text-sm mb-1.5 text-gray-400">Category filter</label>
+                <select id="attack-category" class="w-full py-2.5 px-5 bg-gray-950 border border-gray-700 rounded-md text-gray-200 text-[0.95rem]">
+                    <option value="">all categories</option>
+                    <option value="direct">direct</option>
+                    <option value="indirect">indirect</option>
+                    <option value="tool-hijack">tool-hijack</option>
+
+                </select>
+
+            </div>
             <div class="field mb-4">
                 <label for="attack-category" class="block font-semibold text-sm mb-1.5 text-gray-400">Attack</label>
                 <select id="attack-category" class="w-full py-2.5 px-5 bg-gray-950 border border-gray-700 rounded-md text-gray-200 text-[0.95rem]">

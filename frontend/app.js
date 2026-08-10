@@ -5,7 +5,7 @@ const runBtn = document.getElementById("run-btn");
 const badgeEl = document.getElementById("badge");
 const traceViewerEl = document.getElementById("trace-viewer");
 const scoreboardEl = document.getElementById("scoreboard-content");
-
+const categoryFilter = document.getElementById("attack-category")
 
 
 function escapeHtml(str){
@@ -55,15 +55,28 @@ async function loadScoreboard(){
 }
 
 
-async function loadAttacks(){
-    const res = await fetch(`${API_BASE}/attacks`);
-    const attacks = await res.json();
-    for (const a of attacks){
+let allAttacks = [];
+
+function renderAttackOptions(){
+    const category = categoryFilter.value;
+    attackSelect.innerHTML = '<option value="">-- select an attack --</option>';
+    for (const a of allAttacks){
+        if (category && a.category !== category) continue;
+    
         const opt = document.createElement("option");
         opt.value = a.id;
         opt.textContent = `${a.name} (${a.category}, ${a.difficulty})`;
         attackSelect.appendChild(opt);
     }
+}
+
+
+
+
+async function loadAttacks(){
+    const res = await fetch(`${API_BASE}/attacks`);
+    allAttacks = await res.json();
+    renderAttackOptions();
 }
 
 
@@ -75,7 +88,7 @@ function getSelectedGuardrails(){
 async function runAttack(){
     const id = attackSelect.value || null;
     const prompt = customPrompt.value.trim();
-    if (!id && !promt){
+    if (!id && !prompt){
         alert("pick an attack or custom prompt");
         return;
     }
@@ -108,5 +121,6 @@ async function runAttack(){
     }
 }
 runBtn.addEventListener("click", runAttack);
+categoryFilter.addEventListener("change", renderAttackOptions);
 loadAttacks();
 loadScoreboard();
