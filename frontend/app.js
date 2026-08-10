@@ -1,4 +1,4 @@
-const API_BASE = "http://127.0.0.1:8000";
+const API_BASE = "%%API_BASE%%";
 const attackSelect = document.getElementById("attack-select");
 const customPrompt = document.getElementById("custom-prompt");
 const runBtn = document.getElementById("run-btn");
