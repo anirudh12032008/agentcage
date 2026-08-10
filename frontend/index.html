@@ -57,8 +57,8 @@
 <label class="block font-semibold text-sm mb-1.5 text-gray-400" > guardrails</label>
 <div id="guardrail-toggles" class="flex flex-col gap-1.5">
 <label class="font-normal text-gray-200 flex items-center gap-2"> <input  type="checkbox" value="pattern_filter">pattern filter </label>
-<label class="font-normal text-gray-200 flex items-center gap-2"> <input type="checkbox" value="pattern_filter">sandbox delimiter </label>
-<label class="font-normal text-gray-200 flex items-center gap-2"> <input type="checkbox" value="pattern_filter">judge llm </label>
+<label class="font-normal text-gray-200 flex items-center gap-2"> <input type="checkbox" value="sandbox_delimiter">sandbox delimiter </label>
+<label class="font-normal text-gray-200 flex items-center gap-2"> <input type="checkbox" value="judge_llm">judge llm </label>
 <label class="font-normal text-gray-200 flex items-center gap-2"> <input type="checkbox" value="output_redaction">output redaction </label>
 
 
@@ -76,6 +76,10 @@
         <section id="scoreboard" class="bg-gray-900 border border-gray-700 rounded-lg p-5">
             <h2>Scoreboard</h2>
             <div id="scoreboard-content">no runs yet</div>
+        </section>
+        <section id="inbox" class="bg-gray-900 border border-gray-700 rounded-lg p-5">
+            <h2>Inbox <span class="text-sm text-gray-400 font-normal">(fake emails that got exfiltrated)</span></h2>
+            <div id="inbox-content" class="flex flex-col gap-3 mt-3">no emails yet</div>
         </section>
     </main>
     <script src="app.js"></script>

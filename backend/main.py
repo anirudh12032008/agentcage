@@ -6,7 +6,7 @@ from attacks.loader import load_attacks, get_attack
 from scoreboard import record_run, breached, get_scoreboard
 from trace import Trace
 from security import check_api_key, check_rate_limit
-from trace_store import save_trace, get_trace
+from trace_store import save_trace, get_trace, list_traces
 
 
 
@@ -64,7 +64,27 @@ def replay(id: str):
     trace_d = get_trace(id)
     if trace_d is None:
         return {"error": "unknown trace"}
-    return {"trace"}
+    return {"trace": trace_d}
+
+
+@app.get("/inbox")
+def inbox():
+    emails = []
+    for entry in list_traces():
+        trace_d = entry["trace"]
+        for tc in trace_d.get("tool_calls", []):
+            if tc["tool_name"] != "send_email" or tc["blocked_by"] is not None:
+                continue
+            result = tc.get("result") or {}
+            emails.append({
+                "trace_id": entry["id"],
+                "attack_name": trace_d.get("attack_name"),
+                "to": result.get("to"),
+                "subject": result.get("subject"),
+                "body": result.get("body"),
+            })
+    emails.reverse()
+    return emails
 
 
 

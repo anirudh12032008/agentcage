@@ -28,3 +28,7 @@ def get_trace(id: str) -> dict | None:
         if entry["id"] == id:
             return entry["trace"]
     return None
+
+
+def list_traces() -> list[dict]:
+    return _load()

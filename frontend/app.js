@@ -7,6 +7,7 @@ const runBtn = document.getElementById("run-btn");
 const badgeEl = document.getElementById("badge");
 const traceViewerEl = document.getElementById("trace-viewer");
 const scoreboardEl = document.getElementById("scoreboard-content");
+const inboxEl = document.getElementById("inbox-content");
 const categoryFilter = document.getElementById("attack-category")
 
 
@@ -59,6 +60,23 @@ async function loadScoreboard(){
       <thead><tr><th>Guardrail combo</th><th>Attempted</th><th>Breaches</th></tr></thead>
     <tbody>${rows}</tbody>
       </table></p>`;
+}
+
+
+async function loadInbox(){
+    const res = await fetch(`${API_BASE}/inbox`);
+    const emails = await res.json();
+    if (!emails.length){
+        inboxEl.textContent = "no emails yet";
+        return;
+    }
+    inboxEl.innerHTML = emails.map(e => `
+        <div class="trace-step">
+            <div class="label">to: ${escapeHtml(e.to)}${e.attack_name ? ` &middot; via "${escapeHtml(e.attack_name)}"` : ""}</div>
+            <div class="font-semibold">${escapeHtml(e.subject)}</div>
+            <pre>${escapeHtml(e.body)}</pre>
+        </div>
+    `).join("");
 }
 
 
@@ -126,6 +144,7 @@ async function runAttack(){
         }
         renderTrace(data.trace, data.breach)
         await loadScoreboard();
+        await loadInbox();
     } finally {
         runBtn.disabled = false;
         runBtn.textContent = "ATTACK!!!!!!!";
@@ -157,3 +176,4 @@ categoryFilter.addEventListener("change", renderAttackOptions);
 initTheme();
 loadAttacks();
 loadScoreboard();
+loadInbox();
