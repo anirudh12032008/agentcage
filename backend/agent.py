@@ -75,15 +75,14 @@ TOOL_FUNC = {
 MAX_TOOLS =5
 def run_agent(user_prompt: str, trace: Trace, guardrails: set[str] = frozenset()) -> str:
 
+    prompt_for_model = user_prompt
     if "pattern_filter" in guardrails:
         safe, reason = pattern_filter.check(user_prompt)
         trace.log_guardrail(pattern_filter.NAME, safe, reason)
         if not safe:
-            content = f"[REDACTED by pattern_filter: {reason}]"
-        if "sandbox_delimiter" in guardrails and name in UNTRUSTED_TOOLS:
-            content = sandbox_delimiter.wrap(content)
+            prompt_for_model = f"[REDACTED by pattern_filter: {reason}]"
     msgs = [
-        {"role": "system", "content": PROMPT}, {"role": "user", "content": user_prompt},
+        {"role": "system", "content": PROMPT}, {"role": "user", "content": prompt_for_model},
     ]
 
     for _ in range(MAX_TOOLS):
@@ -124,6 +123,9 @@ def run_agent(user_prompt: str, trace: Trace, guardrails: set[str] = frozenset()
             func = TOOL_FUNC.get(name)
             result = func(args) if func else f"ERROR: unknown tool --- {name}"
             trace.tool_calls.append(ToolCallRecord(tool_name=name, args=args, result=result))
+
+            if "sandbox_delimiter" in guardrails and name in UNTRUSTED_TOOLS:
+                result = sandbox_delimiter.wrap(result)
 
             msgs.append({
                 "role": "tool",

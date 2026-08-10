@@ -18,10 +18,10 @@ function renderTrace(trace, breach){
     badgeEl.className = breach ? "fail" : "pass";
     badgeEl.textContent = breach ? "FAILED" : "PASSED"
     const steps = [];
-    steps.push(`<div class="trace-step"><div class="label">prompt</div><pre>${escapeHtml(trace.prompt)}</pre></div>`);
+    steps.push(`<div class="trace-step"><div class="label">prompt</div><pre>${escapeHtml(trace.user_prompt)}</pre></div>`);
 
     for (const t of trace.tool_calls){
-        const blocked = t.blocked ? ` (blocked by ${t.blocked_by})` : "";
+        const blocked = t.blocked_by ? ` (blocked by ${t.blocked_by})` : "";
         steps.push(`<div class="trace-step"><div class="label"> tool call ${blocked}</div>
             <pre>${escapeHtml(t.tool_name)}(${escapeHtml(JSON.stringify(t.args))})</pre>
             <div class="label"> result </div>
@@ -32,6 +32,7 @@ function renderTrace(trace, breach){
     }
 
     steps.push(`<div class="trace-step"><div class="label">final result</div><pre>${escapeHtml(trace.response)}</pre></div>`);
+    traceViewerEl.innerHTML = steps.join("");
 }
 
 

@@ -48,7 +48,7 @@ def run(req: RunRequest):
         difficulty = None
     else:
         return {"error": "no id nor custom prompt given"}
-    trace = Trace(user_prompt=prompt, attack_name=name)
+    trace = Trace(user_prompt=prompt, attack_name=name, guardrails=req.guardrails)
     run_agent(prompt, trace, guardrails=set(req.guardrails))
     breach = breached(trace)
     record_run(trace, breach, difficulty=difficulty, id=req.id)
