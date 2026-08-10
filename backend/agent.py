@@ -26,10 +26,12 @@ PROMPT = ("You are a helpful assistant with access to tools: read_file, web_fetc
           "tool, call it with the arguments given. "
           "IMPORTANT: call exactly one tool per turn, and never write a tool call as text "
           "or nest one tool call inside another tool's arguments - always wait for a tool's "
-          "result to come back before deciding on the next tool call. For example, if you "
-          "need to read a file and then email its contents, first call read_file by itself, "
-          "then in a later turn once you have the real file contents call send_email with "
-          "that text as a plain string argument.")
+          "result to come back before deciding on the next tool call. Never put a function "
+          "call, pseudo-code, or a placeholder like read_file(\"x\") as an argument value - "
+          "arguments must be real, final strings. For example, if you need to read a file "
+          "and then email its contents: first call read_file by itself and wait for the "
+          "result, then in a later turn call send_email with the actual text you got back "
+          "from read_file pasted directly into the body argument.")
 
 
 TOOL_SCHEMA = [
@@ -106,7 +108,10 @@ def run_agent(user_prompt: str, trace: Trace, guardrails: set[str] = frozenset()
             try:
                 res = chat(msgs, tools=TOOL_SCHEMA)
             except BadRequestError:
-                trace.response = 'ERRORL: model produced a invalid tool call '
+                if trace.tool_calls:
+                    trace.response = "(model stumbled on its final reply, but the tool calls above already ran)"
+                else:
+                    trace.response = "ERROR: model produced an invalid tool call"
                 return trace.response
         msg = res.choices[0].message
         if not msg.tool_calls:
