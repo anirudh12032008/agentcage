@@ -2,7 +2,7 @@ import json
 from llm import chat
 from trace import Trace, ToolCallRecord
 from tools.read_file import read_file
-from tools.web_fetch import web_fetch
+from tools.web_fetch import fetch as web_fetch
 from tools.send_email import send_email
 from guardrails import pattern_filter, sandbox_delimiter, judge_llm, output_redaction
 # pls ignore idk why groq is showing error
