@@ -93,7 +93,7 @@ async function runAttack(){
         return;
     }
     const body = {
-        attack_id: id,
+        id: id,
         custom_prompt: id ? null :prompt,
         guardrails: getSelectedGuardrails(),
     };

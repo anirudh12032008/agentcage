@@ -15,8 +15,8 @@ def load_attacks() -> list[dict]:
         attacks.append(data)
     return attacks
 
-def get_attack(attack_id: str) -> dict | None:
+def get_attack(id: str) -> dict | None:
     for attack in load_attacks():
-        if attack["id"] == attack_id:
+        if attack["id"] == id:
             return attack
     return None 

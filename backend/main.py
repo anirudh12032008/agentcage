@@ -28,17 +28,17 @@ def list_attacks():
     return load_attack
 
 class RunRequest(BaseModel):
-    attack_id: str | None = None
+    id: str | None = None
     custom_prompt: str | None = None
     guardrails: list[str] = []
 
 
 @app.post("/run", dependencies=[Depends(check_api_key), Depends(check_rate_limit)])
 def run(req: RunRequest):
-    if req.attack_id:
-        a = get_attack(req.attack_id)
+    if req.id:
+        a = get_attack(req.id)
         if not a:
-            return {f"unknown attack": {req.attack_id}}
+            return {f"unknown attack": {req.id}}
         prompt = a["payload"]
         name = a["name"]
         difficulty = a["difficulty"]
@@ -51,7 +51,7 @@ def run(req: RunRequest):
     trace = Trace(user_prompt=prompt, attack_name=name)
     run_agent(prompt, trace, guardrails=set(req.guardrails))
     breach = breached(trace)
-    record_run(trace, breach, difficulty=difficulty)
+    record_run(trace, breach, difficulty=difficulty, id=req.id)
     trace_d = trace.to_dict()
     id = save_trace(trace_d)
     return {"trace": trace_d, "breach": breach, "trace_id": id}
