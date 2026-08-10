@@ -120,7 +120,28 @@ async function runAttack(){
 
     }
 }
+
+
+
+const themeToggle = document.getElementById("theme-toggle");
+function applyTheme(theme){
+    document.documentElement.dataset.theme = theme;
+    themeToggle.textContent = theme === "light" ? "light" : "dark";
+}
+function initTheme(){
+    const saved = localStorage.getItem("theme") || "dark";
+    applyTheme(saved);
+}
+themeToggle.addEventListener('click', ()=> {
+    const next = document.documentElement.dataset.theme === "light"?"dark":"light";
+    localStorage.setItem("theme", next);
+    applyTheme(next);
+})
+
+
+
 runBtn.addEventListener("click", runAttack);
 categoryFilter.addEventListener("change", renderAttackOptions);
+initTheme();
 loadAttacks();
 loadScoreboard();
