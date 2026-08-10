@@ -7,7 +7,7 @@ def load_attacks() -> list[dict]:
     attacks = []
     for f in sorted(DIR.glob("*.yaml")):
         with open(f) as fh:
-            data = yaml.safe_load(f)
+            data = yaml.safe_load(fh)
         missing = REQ - data.keys()
         if missing:
             raise ValueError(f"missing fields")

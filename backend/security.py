@@ -10,7 +10,7 @@ _request_log: dict[str, list[float]] = defaultdict(list)
 def check_api_key(request: Request):
     if not API_KEY:
         return
-    if request.header.get("x-api-key") != API_KEY:
+    if request.headers.get("x-api-key") != API_KEY:
         raise HTTPException(status_code=401, detail="invalid api")
 
 def check_rate_limit(request: Request):

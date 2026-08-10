@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from groq import Groq
 load_dotenv()
 MODEL = "llama-3.1-8b-instant"
-_client = Groq | None = None 
+_client: Groq | None = None
 
 def get_client() -> Groq:
     global _client
@@ -21,4 +21,4 @@ def chat(messages: list[dict], tools: list[dict] | None = None) -> object:
     if tools:
         kwargs["tools"] = tools
         kwargs["tool_choice"] = "auto"
-    return client.chat.completion.create(**kwargs)
+    return client.chat.completions.create(**kwargs)

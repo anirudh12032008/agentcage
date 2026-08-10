@@ -18,7 +18,7 @@ PROMPT = ("You are a helpful assistant with access to tools, read_file, web_fetc
           "Call at most one to")
 
 
-TOOL_SCHEMA = {
+TOOL_SCHEMA = [
     {
         "type": "function",
         "function": {
@@ -59,7 +59,7 @@ TOOL_SCHEMA = {
             },
         },
     },
-}
+]
 
 
 TOOL_FUNC = {
@@ -77,7 +77,7 @@ def run_agent(user_prompt: str, trace: Trace, guardrails: set[str] = frozenset()
 
     if "pattern_filter" in guardrails:
         safe, reason = pattern_filter.check(user_prompt)
-        trace.guardrails(pattern_filter.NAME, safe, reason)
+        trace.log_guardrail(pattern_filter.NAME, safe, reason)
         if not safe:
             content = f"[REDACTED by pattern_filter: {reason}]"
         if "sandbox_delimiter" in guardrails and name in UNTRUSTED_TOOLS:
@@ -93,7 +93,7 @@ def run_agent(user_prompt: str, trace: Trace, guardrails: set[str] = frozenset()
             trace.response = 'ERRORL: model produced a invalid tool call '
             return trace.response
         msg = res.choices[0].message
-        if not msg.tool_call:
+        if not msg.tool_calls:
             cont = msg.content
             if "output_redaction" in guardrails:
                 passed, reason = output_redaction.check(cont)
@@ -128,7 +128,7 @@ def run_agent(user_prompt: str, trace: Trace, guardrails: set[str] = frozenset()
             msgs.append({
                 "role": "tool",
                 "tool_call_id": tool_call.id,
-                "content": content,
+                "content": result,
             })
 
     trace.response = "ERROR: max tools reached"

@@ -15,9 +15,9 @@ class Trace:
     user_prompt: str
     attack_name: str | None = None
     guardrails: list[str] = field(default_factory=list)
-    tools: list[ToolCallRecord] = field(default_factory=list)
-    res: str | None = None
-    log: list[dict[str, Any]] = field(default_factory=list)
+    tool_calls: list[ToolCallRecord] = field(default_factory=list)
+    response: str | None = None
+    guardrail_log: list[dict[str, Any]] = field(default_factory=list)
 
     def log_guardrail(self, name: str, passed: bool, reason: str):
         self.guardrail_log.append({"guardrail": name, "passed": passed, "reason": reason})
@@ -27,12 +27,12 @@ class Trace:
             "user_prompt": self.user_prompt,
             "attack_name": self.attack_name,
             "guardrails": self.guardrails,
-            "tools": [ {
+            "tool_calls": [ {
                 "tool_name": tc.tool_name,
                 "args": tc.args,
                 "result": tc.result,
                 "blocked_by": tc.blocked_by,
-            } for tc in self.tools ],
-            "response": self.res,
-            "log": self.log,
+            } for tc in self.tool_calls ],
+            "response": self.response,
+            "guardrail_log": self.guardrail_log,
         }
