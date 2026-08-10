@@ -1,4 +1,6 @@
-const API_BASE = "%%API_BASE%%";
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? "http://127.0.0.1:8000"
+  : "https://agentcage.onrender.com";
 const attackSelect = document.getElementById("attack-select");
 const customPrompt = document.getElementById("custom-prompt");
 const runBtn = document.getElementById("run-btn");
