@@ -1,8 +1,8 @@
-from fastAPI import Depends, FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from agent import run_agent
-from attacks.loader import load_attack, get_attack
+from attacks.loader import load_attacks, get_attack
 from scoreboard import record_run, breached, get_scoreboard
 from trace import Trace
 from security import check_api_key, check_rate_limit
@@ -25,7 +25,7 @@ def health():
 
 @app.get("/attacks")
 def list_attacks():
-    return load_attack
+    return load_attacks()
 
 class RunRequest(BaseModel):
     id: str | None = None
