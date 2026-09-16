@@ -59,4 +59,4 @@ then:
 
 ### ai disclosure
 i designed the project and attacks and the guardrails myself, very less ai was used throughout the project dirctly
-i used claude for debugging the scoreboard + frontend bugs and majorly for deployment config
+i used claude for debugging the scoreboard + frontend bugs and majorly for deployment config and in the ending when render sucks i had to take help onfg i hate render
