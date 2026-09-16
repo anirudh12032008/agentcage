@@ -1,5 +1,7 @@
+from pathlib import Path
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from agent import run_agent
 from attacks.loader import load_attacks, get_attack
@@ -17,11 +19,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.api_route("/", methods=["GET", "HEAD"])
-def root():
-    return {"service": "battle", "docs": "/docs"}
-
 
 @app.get("/health")
 def health():
@@ -99,3 +96,9 @@ def inbox():
 @app.get("/scoreboard")
 def scoreboard():
     return get_scoreboard()
+
+
+# must stay last: mounting at "/" catches everything the routes above didn't
+FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
+if FRONTEND_DIR.is_dir():
+    app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
