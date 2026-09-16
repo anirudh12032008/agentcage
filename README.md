@@ -9,6 +9,8 @@ this is a tool using llm agents gets attacked with a library of prompt injection
 - 12 different attack payloads in YAML files which are split into direct injections, indirect injections and tool-hijack 
 
 ## screenshots
+<img width="1023" height="752" alt="Screenshot 2026-09-16 at 8 41 30 AM" src="https://github.com/user-attachments/assets/feec6869-907b-4a5b-a6d7-3a91707dc6f2" />
+<img width="1435" height="1061" alt="Screenshot 2026-09-16 at 8 41 25 AM" src="https://github.com/user-attachments/assets/df94bf32-b590-4a4b-a02c-75c60f1daf47" />
 
 ### the guardrails
 - pattern_filter: catches the obvious stuff
